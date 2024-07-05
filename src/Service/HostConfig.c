@@ -23,7 +23,6 @@ HostConfig constructor_host_config()
     hostConfig.pathToAppSettingsFile = settingHost.set_appsettings_file(&settingHost);
     hostConfig.appSettings = constructor_app_settings();
 
-    hostConfig.update_settings_from_file = update_settings_from_file;
     hostConfig.write_default_settings_to_file = write_default_settings_to_file;
 
     return hostConfig;

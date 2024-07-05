@@ -14,13 +14,10 @@ typedef struct {
     EnvironmentManager envMngr;
 
     int (*write_default_settings_to_file)(void*);
-    int (*update_settings_from_file)(void*);
 } HostConfig;
 
 HostConfig constructor_host_config();
 
 int write_default_settings_to_file(void* self);
-
-int update_settings_from_file(void* self);
 
 # endif
