@@ -1,7 +1,6 @@
-# include "PackageWorker.h"
+# include "../Application/PackageWorker.h"
 # include <unistd.h>
 # include <string.h>
-# include <stdio.h>
 # include <stdlib.h>
 # include <errno.h>
 # include <sys/wait.h>
@@ -21,25 +20,33 @@ PackageWorker constructor_package_worker()
 
 int open_std_pipes(void* self)
 {
+    errno = 0;
+
     PackageWorker* ppackageWorker = (PackageWorker*)self;
     pipe(ppackageWorker->errPipe);
     pipe(ppackageWorker->outPipe);
 
-    return errno;
+    int errNum = errno;
+
+    return errNum;
 }
 
 int is_package_exists(void* self, char* packageName)
 {
+    errno = 0;
+    int errNum = 0;
+
     PackageWorker* ppackageWorker = (PackageWorker*)self;
 
-    if (!ppackageWorker->open_std_pipes(ppackageWorker)){
-        strerror(errno);
+    if ((errNum = ppackageWorker->open_std_pipes(ppackageWorker)) != 0){
+        return errNum;
     }
 
     pid_t childProcessPID = fork();
 
     if (childProcessPID == -1){
-        strerror(errno);
+        errNum = errno;
+        return errNum;
     }
     else if (childProcessPID == 0){
         int copyOfOutFileDescriptorID = ppackageWorker->outPipe[1];
@@ -65,13 +72,18 @@ int is_package_exists(void* self, char* packageName)
         int childProcessStatus;
         waitpid(childProcessPID, &childProcessStatus, 0);
 
+        if (!WIFEXITED(childProcessStatus)){
+            errNum = WEXITSTATUS(childProcessPID);
+            return errNum;
+        }
+
         close(ppackageWorker->errPipe[1]);
         close(ppackageWorker->outPipe[1]);
 
         int countReadErrSymbols = 0;
         char ch;
         while (read(ppackageWorker->errPipe[0], &ch, 1) > 0){
-            printf("%c", ch);
+            // printf("%c", ch);
             countReadErrSymbols++;
         }   
 
