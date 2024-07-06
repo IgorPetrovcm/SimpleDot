@@ -29,17 +29,11 @@ char* to_dto(char* value)
     return result;
 }
 
-char* get_appsetting_string(int mode, char* value, int argc, ...)
+char* get_appsetting_string(int mode, char* value, char* environmentVariable)
 {
     size_t appSettingStrSize = 0;
-    va_list ap;
 
-    va_start(ap, argc);
-    for (int i = 0; i < argc; i++){
-        appSettingStrSize += strlen(va_arg(ap, char*));
-    }
-    va_end(ap);
-
+    appSettingStrSize += strlen(environmentVariable);
     appSettingStrSize += sizeof("=");
     appSettingStrSize += strlen(value);
     if (mode == WITH_N){
@@ -49,12 +43,7 @@ char* get_appsetting_string(int mode, char* value, int argc, ...)
 
     char* appSettingStr = malloc(appSettingStrSize);
 
-    va_start(ap, argc);
-    for (int i = 0; i < argc; i++){
-        strcat(appSettingStr, va_arg(ap, char*));
-    }
-    va_end(ap);
-
+    strcat(appSettingStr, environmentVariable);
     strcat(appSettingStr, "=");
     strcat(appSettingStr, value);
     if (mode == WITH_N){

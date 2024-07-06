@@ -6,12 +6,12 @@
 
 typedef struct {
     char* (*to_dto)(char*);
-    char* (*get_appsetting_string)(int, char*, int, ...);
+    char* (*get_appsetting_string)(int, char*, char*);
 } Mapping;
 
 char* to_dto(char* value);
 
-char* get_appsetting_string(int mode, char* value, int argc, ...);
+char* get_appsetting_string(int mode, char* value, char* environmentVariable);
 
 Mapping constructor_mapping();
 
