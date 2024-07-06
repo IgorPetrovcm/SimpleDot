@@ -30,13 +30,19 @@ char* get_variables(void* self, AppSettings* appSettings)
 
     char* result = malloc(2048);
 
-    char* errorStrDTO = envMngr->mapping.to_dto(appSettings->loggingSettings.error);
-    char* infoStrDTO = envMngr->mapping.to_dto(appSettings->loggingSettings.info);
-    char* warningStrDTO = envMngr->mapping.to_dto(appSettings->loggingSettings.warning);
+    int countDTOs = 3;
+    char* dtos[3] = { 
+        envMngr->mapping.to_dto(appSettings->loggingSettings.error), 
+        envMngr->mapping.to_dto(appSettings->loggingSettings.info),
+        envMngr->mapping.to_dto(appSettings->loggingSettings.warning)
+        };
 
-    strcpy(result, envMngr->mapping.get_appsetting_string(WITH_N, errorStrDTO, logging_modes[0]));
-    strcat(result, envMngr->mapping.get_appsetting_string(WITH_N, infoStrDTO, logging_modes[1]));
-    strcat(result, envMngr->mapping.get_appsetting_string(WITH_N, warningStrDTO, logging_modes[2]));
+    for (int i = 0; i < countDTOs; i++){
+        if (i == 0){
+            strcpy(result, envMngr->mapping.get_appsetting_string(WITH_N, dtos[i], logging_modes[i]));
+        }
+        strcat(result, envMngr->mapping.get_appsetting_string(WITH_N, dtos[i], logging_modes[i]));
+    }
     
     return result;
 }
