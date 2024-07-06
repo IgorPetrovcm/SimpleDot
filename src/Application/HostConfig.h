@@ -12,12 +12,8 @@ typedef struct {
     SettingHostConfig settingHost;
     Mapping mapping;
     EnvironmentManager envMngr;
-
-    int (*write_default_settings_to_file)(void*);
 } HostConfig;
 
 HostConfig constructor_host_config();
-
-int write_default_settings_to_file(void* self);
 
 # endif
