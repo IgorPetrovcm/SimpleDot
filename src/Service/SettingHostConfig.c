@@ -38,7 +38,7 @@ char* set_appsettings_file(void* self)
     if (access(settingHost->appSettingsDirectoryName, F_OK) != 0){
         mkdir(settingHost->appSettingsDirectoryName, 0777);
     }
-    FILE* appSettingsFile = fopen(appSettingsFileName, "w+");
+    FILE* appSettingsFile = fopen(appSettingsFileName, "a");
     fclose(appSettingsFile);
 
     if ((errNum = errno) != 0){
