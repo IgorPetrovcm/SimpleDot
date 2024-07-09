@@ -4,10 +4,11 @@
 # include "SettingHost.h"
 # include "EnvironmentManager.h"
 # include "Logging.h"
-# include "../Model/AppSettings.h"
+# include "ProcessesManager.h"
 
 typedef struct {
     char* pathToAppSettingsFile;
+    ProcessesManager* processesManager;
     AppSettings* appSettings;
     SettingHost* settingHost;
     Logging* logging;
