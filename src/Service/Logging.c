@@ -29,5 +29,10 @@ void log(int mode, char* message, char* treeFileNames, int noFileStr, char* time
 
     sprintf(logMessage, "%s\t\t%s\t\033[35m%s:\033[0m \033[33m%s:%s\033[0m\t%s", headers[mode],time, getenv(startMessageVariables[mode]), treeFileNames, noFileStrToStr, message);
 
-    printf("%s", logMessage);
+    if (mode == 0){
+        fprintf(stderr, "%s\n", logMessage);
+    }
+    else {
+        printf("%s\n", logMessage);
+    }
 }
