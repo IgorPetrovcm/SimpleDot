@@ -9,13 +9,13 @@ typedef struct {
 
     ProcessesManager* processesManager;
 
-    int (*open_std_pipes) (void*);
+    // int (*open_std_pipes) (void*);
     int (*is_package_exists) (void*, char*);
 } PackageWorker;
 
 int is_package_exists(void* self, char* packageName);
 
-int open_std_pipes(void* self);
+// int open_std_pipes(void* self);
 
 PackageWorker* constructor_package_worker(ProcessesManager* processesManager);
 
