@@ -14,6 +14,6 @@ typedef struct {
 
 void log(int mode, char* message, char* treeFileNames, int noFileStr, char* time);
 
-Logging constructor_logging(EnvironmentManager* envMngr);
+Logging* constructor_logging(EnvironmentManager* envMngr);
 
 # endif

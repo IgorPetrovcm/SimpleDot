@@ -7,6 +7,6 @@ typedef struct {
 
 int open_pipes(int, ...);
 
-ProcessesManager constructor_processes_manager();
+ProcessesManager* constructor_processes_manager();
 
 # endif

@@ -9,11 +9,14 @@ static const char* sudo = "sudo";
 static const char* package_manager = "pacman";
 static const char* q_flag = "-Q";
 
-PackageWorker constructor_package_worker()
+PackageWorker* constructor_package_worker(ProcessesManager* processesManager)
 {
-    PackageWorker packageWorker;
-    packageWorker.is_package_exists = is_package_exists;
-    packageWorker.open_std_pipes = open_std_pipes;
+    PackageWorker* packageWorker = (PackageWorker*)malloc(sizeof(PackageWorker));
+
+    packageWorker->processesManager = processesManager;
+
+    packageWorker->is_package_exists = is_package_exists;
+    packageWorker->open_std_pipes = open_std_pipes;
 
     return packageWorker;
 }

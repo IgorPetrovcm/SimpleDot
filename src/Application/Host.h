@@ -14,6 +14,6 @@ typedef struct {
     EnvironmentManager* envMngr;
 } Host;
 
-Host constructor_host();
+Host* constructor_host();
 
 # endif

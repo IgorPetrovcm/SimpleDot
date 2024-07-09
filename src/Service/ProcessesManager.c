@@ -1,13 +1,16 @@
 # include "../Application/ProcessesManager.h"
+# include <stdlib.h>
 # include <stdarg.h>
 # include <unistd.h>
 # include <errno.h>
 
-ProcessesManager constructor_processes_manager()
+ProcessesManager* constructor_processes_manager()
 {
-    ProcessesManager procMngr;
+    ProcessesManager* procMngr = (ProcessesManager*)malloc(sizeof(ProcessesManager));
 
-    procMngr.open_pipes = open_pipes;
+    procMngr->open_pipes = open_pipes;
+
+    return procMngr;
 }
 
 int open_pipes(int count , ...)

@@ -3,17 +3,16 @@
 # include "../Application/Logging.h"
 # include "../Application/EnvironmentManager.h"
 # include "../Application/ProcessesManager.h"
-# include "../Model/AppSettings.h"
 # include <stdlib.h>
 # include <stdio.h>
 # include <unistd.h>
 # include <sys/stat.h>
 
-Host constructor_host_config()
+Host* constructor_host_config()
 {
-    Host host;
+    Host* host = (Host*)malloc(sizeof(Host));
 
-    SettingHost settingHost = constructor_setting_host();
+    SettingHost* settingHost = constructor_setting_host();
 
     char appSettingsDirectory[256];
     sprintf(appSettingsDirectory, "%s", getenv("HOME"));
@@ -21,14 +20,14 @@ Host constructor_host_config()
     char appSettingsFileName[256];
     sprintf(appSettingsFileName, "%s", "appsettings");
 
-    if (settingHost.set_appsettings_file(host.pathToAppSettingsFile, appSettingsDirectory, appSettingsFileName) < 0){
+    if (settingHost->set_appsettings_file(host->pathToAppSettingsFile, appSettingsDirectory, appSettingsFileName) < 0){
         exit(-1);
     }
 
-    EnvironmentManager envMngr = constructor_environment_manager(host.pathToAppSettingsFile);
+    EnvironmentManager* envMngr = constructor_environment_manager(host->pathToAppSettingsFile);
 
-    *host.settingHost = settingHost;
-    *host.envMngr = envMngr;
+    host->settingHost = settingHost;
+    host->envMngr = envMngr;
 
     return host;
 }

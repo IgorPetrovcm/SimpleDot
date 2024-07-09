@@ -4,10 +4,9 @@
 # include "LoggingSettings.h"
 
 typedef struct{
-    LoggingSettings loggingSettings;
-    
+    LoggingSettings* loggingSettings;
 } AppSettings;
 
-AppSettings constructor_app_settings();
+AppSettings* constructor_app_settings();
 
 # endif

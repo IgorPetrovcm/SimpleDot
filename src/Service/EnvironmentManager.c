@@ -8,18 +8,18 @@
 char* const logging_modes[3] = { SMD_LOGGING_ERROR, SMD_LOGGING_INFO, SMD_LOGGING_WARNING };
 
 
-EnvironmentManager constructor_environment_manager(char* pathToAppSettingsFile)
+EnvironmentManager* constructor_environment_manager(char* pathToAppSettingsFile)
 {
-    EnvironmentManager envMngr;
+    EnvironmentManager* envMngr = malloc(sizeof(EnvironmentManager));
 
-    *envMngr.appSettings = constructor_app_settings();
-    envMngr.pathToAppSettingsFile = pathToAppSettingsFile;
+    envMngr->appSettings = constructor_app_settings();
+    envMngr->pathToAppSettingsFile = pathToAppSettingsFile;
 
-    envMngr.print_appsetting_to_buffer = print_appsetting_to_buffer;
-    envMngr.print_variables_to_buffer = print_variables_to_buffer;
-    envMngr.push_settings_from_file = push_settings_from_file;
-    envMngr.get_logging_variable = get_logging_variable;
-    envMngr.print_settings_to_file = print_settings_to_file;
+    envMngr->print_appsetting_to_buffer = print_appsetting_to_buffer;
+    envMngr->print_variables_to_buffer = print_variables_to_buffer;
+    envMngr->push_settings_from_file = push_settings_from_file;
+    envMngr->get_logging_variable = get_logging_variable;
+    envMngr->print_settings_to_file = print_settings_to_file;
 
     return envMngr;
 }
@@ -45,9 +45,9 @@ int print_variables_to_buffer(void* self, char* buffer, char delimiter)
 
     int variablesCount = 3;
     char* variables[3] = { 
-        envMngr->appSettings->loggingSettings.error, 
-        envMngr->appSettings->loggingSettings.info,
-        envMngr->appSettings->loggingSettings.warning
+        envMngr->appSettings->loggingSettings->error, 
+        envMngr->appSettings->loggingSettings->info,
+        envMngr->appSettings->loggingSettings->warning
         };
 
     for (int i = 0; i < variablesCount; i++){

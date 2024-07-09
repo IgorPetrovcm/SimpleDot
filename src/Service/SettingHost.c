@@ -8,11 +8,11 @@
 # include <string.h>
 # include <errno.h>
 
-SettingHost constructor_setting_host()
+SettingHost* constructor_setting_host()
 {
-    SettingHost settingHost;
+    SettingHost* settingHost = (SettingHost*)malloc(sizeof(SettingHost));
 
-    settingHost.set_appsettings_file = set_appsettings_file;
+    settingHost->set_appsettings_file = set_appsettings_file;
 
     return settingHost;
 }

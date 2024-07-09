@@ -7,6 +7,6 @@ typedef struct {
     char* warning;
 } LoggingSettings;
 
-LoggingSettings constructor_logging_settings();
+LoggingSettings* constructor_logging_settings();
 
 # endif

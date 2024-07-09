@@ -9,6 +9,6 @@ typedef struct {
 
 int set_appsettings_file(char* buffer, char* appSettingsDirectory, char* appSettingsFileName);
 
-SettingHost constructor_setting_host();
+SettingHost* constructor_setting_host();
 
 # endif
