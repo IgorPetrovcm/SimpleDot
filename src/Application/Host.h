@@ -7,7 +7,7 @@
 # include "ProcessesManager.h"
 
 typedef struct {
-    char* pathToAppSettingsFile;
+    char pathToAppSettingsFile[426];
     ProcessesManager* processesManager;
     AppSettings* appSettings;
     SettingHost* settingHost;

@@ -2,9 +2,7 @@
 # include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
-# include <stdarg.h>
 # include <sys/stat.h>
-# include <sys/types.h>
 # include <string.h>
 # include <errno.h>
 
@@ -26,10 +24,15 @@ int set_appsettings_file(char* buffer, char* appSettingsDirectory, char* appSett
         mkdir(appSettingsDirectory, 0777);
     }
 
-    sprintf(buffer, "%s/%s", appSettingsDirectory, appSettingsFileName);
-    
-    FILE* appSettingsFile = fopen(buffer, "a");
-    fclose(appSettingsFile);
+    strcpy(buffer, appSettingsDirectory);
+    strcat(buffer, appSettingsFileName);
+
+    FILE* appSettingsFileRead = fopen(buffer, "r");
+    if (appSettingsFileRead == NULL){
+        errno = 0;
+        FILE* appSettingsFile = fopen(buffer, "w");
+        fclose(appSettingsFile);
+    }
 
     if ((errNum = errno) != 0){
         char* buffer = strerror(errNum);
