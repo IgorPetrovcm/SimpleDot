@@ -53,8 +53,15 @@ int print_variables_to_buffer(void* self, char* buffer, char delimiter)
     for (int i = 0; i < variablesCount; i++){
         char bufferSetting[256];
         envMngr->print_appsetting_to_buffer(bufferSetting, logging_modes[i], variables[i]);
-        strcat(buffer, bufferSetting);
-        strcat(buffer, &delimiter);
+
+        if (i == 0){
+            strcpy(buffer, bufferSetting);
+            strcat(buffer, &delimiter);
+        }
+        else{
+            strcat(buffer, bufferSetting);
+            strcat(buffer, &delimiter);
+        }
     }
     
     return 0;
@@ -107,19 +114,14 @@ int push_settings_from_file(char* pathToAppSettingsFile)
         char* envName = strtok(lineBuffer, delim);
         char* envValue = strtok(NULL, delim);
 
-        printf("%s", envValue);
-
-        // char* penvValue = envValue;
-        // while ((strchr(penvValue, '\n') != NULL)){
-        //     penvValue++;
-        // }
-        // *penvValue = ' ';
+        char* penvValue = envValue;
+        while ((strchr(penvValue, '\n') != NULL)){
+            penvValue++;
+        }
+        *(penvValue - 1) = '\0';
 
         setenv(envName, envValue, 1);
     }
-
-    printf("%s", getenv(SMD_LOGGING_ERROR));
-    printf("BYE");
 
     if ((errNum = errno) != 0){
         char* errStr = strerror(errNum);
