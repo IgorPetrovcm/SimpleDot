@@ -32,6 +32,6 @@ char* get_logging_variable(int mode);
 
 int print_settings_to_file(void* self);
 
-EnvironmentManager constructor_environment_manager(AppSettings* appSettings, char* pathToAppSettingsFile);
+EnvironmentManager constructor_environment_manager(char* pathToAppSettingsFile);
 
 # endif

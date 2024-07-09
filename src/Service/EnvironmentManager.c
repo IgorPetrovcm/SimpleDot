@@ -8,11 +8,11 @@
 char* const logging_modes[3] = { SMD_LOGGING_ERROR, SMD_LOGGING_INFO, SMD_LOGGING_WARNING };
 
 
-EnvironmentManager constructor_environment_manager(AppSettings* appSettings, char* pathToAppSettingsFile)
+EnvironmentManager constructor_environment_manager(char* pathToAppSettingsFile)
 {
     EnvironmentManager envMngr;
 
-    envMngr.appSettings = appSettings;
+    *envMngr.appSettings = constructor_app_settings();
     envMngr.pathToAppSettingsFile = pathToAppSettingsFile;
 
     envMngr.print_appsetting_to_buffer = print_appsetting_to_buffer;
