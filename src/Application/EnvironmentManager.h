@@ -1,8 +1,6 @@
 # ifndef ENVIRONMENT_MANAGER
 # define ENVIRONMENT_MANAGER
 
-# include "Mapping.h"
-# include "ProcessesManager.h"
 # include "../Model/AppSettings.h"
 
 # define SMD_LOGGING_ERROR "SIMPLEDOT_LOGGING_ERROR"
@@ -14,24 +12,26 @@
 # define LOGGING_WARNING_MODE 2
 
 typedef struct {
-    Mapping mapping;
-    ProcessesManager procMngr;
-    int outPipe[2];
-    int errPipe[2];
-    char* (*get_variables)(void*, AppSettings*);
+    AppSettings* appSettings;
+    char* pathToAppSettingsFile;
+
+    int (*print_appsetting_to_buffer)(char* buffer, char* name, char* value);
+    int (*print_variables_to_buffer)(void* self, char* buffer, char delimiter);
     int (*push_settings_from_file)(char*);
     char* (*get_logging_variable)(int);
-    int (*write_default_settings_to_file)(void*, AppSettings*, char*);
+    int (*print_settings_to_file)(void*);
 } EnvironmentManager;
 
-char* get_variables(void* self, AppSettings* appSettings);
+int print_appsetting_to_buffer(char* buffer, char* name, char* value);
+
+int print_variables_to_buffer(void* self, char* buffer, char delimiter);
 
 int push_settings_from_file(char* pathToAppSettingsFile);
 
 char* get_logging_variable(int mode);
 
-int write_default_settings_to_file(void* self, AppSettings* appSettings, char* pathToAppSettingsFile);
+int print_settings_to_file(void* self);
 
-EnvironmentManager constructor_environment_manager(Mapping mapping, ProcessesManager procMngr);
+EnvironmentManager constructor_environment_manager(AppSettings* appSettings, char* pathToAppSettingsFile);
 
 # endif

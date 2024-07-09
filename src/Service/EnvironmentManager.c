@@ -1,5 +1,4 @@
 # include "../Application/EnvironmentManager.h"
-# include "../Application/Mapping.h"
 # include "../Model/AppSettings.h"
 # include <string.h>
 # include <stdio.h>
@@ -9,54 +8,69 @@
 char* const logging_modes[3] = { SMD_LOGGING_ERROR, SMD_LOGGING_INFO, SMD_LOGGING_WARNING };
 
 
-EnvironmentManager constructor_environment_manager(Mapping mapping, ProcessesManager procMngr)
+EnvironmentManager constructor_environment_manager(AppSettings* appSettings, char* pathToAppSettingsFile)
 {
     EnvironmentManager envMngr;
 
-    envMngr.mapping = mapping;
-    envMngr.procMngr = procMngr;
+    envMngr.appSettings = appSettings;
+    envMngr.pathToAppSettingsFile = pathToAppSettingsFile;
 
-    envMngr.get_variables = get_variables;
+    envMngr.print_appsetting_to_buffer = print_appsetting_to_buffer;
+    envMngr.print_variables_to_buffer = print_variables_to_buffer;
     envMngr.push_settings_from_file = push_settings_from_file;
     envMngr.get_logging_variable = get_logging_variable;
-    envMngr.write_default_settings_to_file = write_default_settings_to_file;
+    envMngr.print_settings_to_file = print_settings_to_file;
 
     return envMngr;
 }
 
-char* get_variables(void* self, AppSettings* appSettings)
+int print_appsetting_to_buffer(char* buffer, char* name, char* value)
 {
-    EnvironmentManager* envMngr = (EnvironmentManager*)self;
-
-    char* result = malloc(2048);
-
-    int countDTOs = 3;
-    char* dtos[3] = { 
-        envMngr->mapping.to_dto(appSettings->loggingSettings.error), 
-        envMngr->mapping.to_dto(appSettings->loggingSettings.info),
-        envMngr->mapping.to_dto(appSettings->loggingSettings.warning)
-        };
-
-    for (int i = 0; i < countDTOs; i++){
-        if (i == 0){
-            strcpy(result, envMngr->mapping.get_appsetting_string(WITH_N, dtos[i], logging_modes[i]));
-        }
-        strcat(result, envMngr->mapping.get_appsetting_string(WITH_N, dtos[i], logging_modes[i]));
+    if (sprintf(buffer, "%s=%s", name, value) < 0){
+        return -1;
     }
-    
-    return result;
+
+    strcat(buffer, "\0");
+
+    return 0;
 }
 
-int write_default_settings_to_file(void *self, AppSettings* appSettings, char* pathToAppSettingsFile)
+int print_variables_to_buffer(void* self, char* buffer, char delimiter)
+{
+    if (self == NULL){
+        return -1;
+    }
+
+    EnvironmentManager* envMngr = (EnvironmentManager*)self;
+
+    int variablesCount = 3;
+    char* variables[3] = { 
+        envMngr->appSettings->loggingSettings.error, 
+        envMngr->appSettings->loggingSettings.info,
+        envMngr->appSettings->loggingSettings.warning
+        };
+
+    for (int i = 0; i < variablesCount; i++){
+        char bufferSetting[256];
+        envMngr->print_appsetting_to_buffer(bufferSetting, logging_modes[i], variables[i]);
+        strcat(buffer, bufferSetting);
+        strcat(buffer, &delimiter);
+    }
+    
+    return 0;
+}
+
+int print_settings_to_file(void *self)
 {
     errno = 0;
     int errNum;
 
     EnvironmentManager* envMngr = (EnvironmentManager*)self; 
 
-    char* settings = envMngr->get_variables(envMngr, appSettings);
+    char settings[2048];
+    print_variables_to_buffer(envMngr, settings, '\n');
 
-    FILE* appSettingsFile = fopen(pathToAppSettingsFile, "w+");
+    FILE* appSettingsFile = fopen(envMngr->pathToAppSettingsFile, "w+");
 
     if ((errNum = errno) != 0){
         return errNum;
@@ -88,14 +102,24 @@ int push_settings_from_file(char* pathToAppSettingsFile)
         fprintf(stderr, "%s", errStr);
     }
 
-
     while (fgets(lineBuffer, sizeof(lineBuffer), appSettingsFile) != NULL){
         char* delim = "=";
         char* envName = strtok(lineBuffer, delim);
         char* envValue = strtok(NULL, delim);
 
+        printf("%s", envValue);
+
+        // char* penvValue = envValue;
+        // while ((strchr(penvValue, '\n') != NULL)){
+        //     penvValue++;
+        // }
+        // *penvValue = ' ';
+
         setenv(envName, envValue, 1);
     }
+
+    printf("%s", getenv(SMD_LOGGING_ERROR));
+    printf("BYE");
 
     if ((errNum = errno) != 0){
         char* errStr = strerror(errNum);
