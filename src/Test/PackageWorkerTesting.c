@@ -7,6 +7,8 @@
 # define PACKAGE_EXISTS_CHECK_EXISTING_PACKAGE is_package_exists_check_existing_package_should_return_true
 # define PACKAGE_NOT_EXISTS_CHECK_EXISTING_PACKAGE is_package_exitsts_check_not_existsing_package_should_return_false
 # define PACKAGE_NAME_EQUAL_NELL_CHECK_EXISTING_PACKAGE is_package_existing_check_package_name_equal_null_should_return_false
+# define PACKAGE_NAME_EXISTS_INSTALL_PACKAGE package_install_install_exists_package_should_return_true
+# define PACKAGE_NAME_NOT_EXISTS_DOESNT_INSTALL_PACKAGE package_install_not_exists_package_return_false
 
 static const char* structName = "PackageWorker";
 static const char* isPackageExistsFunctionName = "is_package_exists()";
@@ -14,6 +16,8 @@ static const char* isPackageExistsFunctionName = "is_package_exists()";
 void PACKAGE_EXISTS_CHECK_EXISTING_PACKAGE(Host* host);
 void PACKAGE_NOT_EXISTS_CHECK_EXISTING_PACKAGE(Host* host);
 void PACKAGE_NAME_EQUAL_NELL_CHECK_EXISTING_PACKAGE(Host* host);
+void PACKAGE_NAME_EXISTS_INSTALL_PACKAGE(Host* host);
+void PACKAGE_NAME_NOT_EXISTS_DOESNT_INSTALL_PACKAGE(Host* host);
 
 int main(){
     Host* host = constructor_host();
@@ -31,13 +35,15 @@ int main(){
     PACKAGE_EXISTS_CHECK_EXISTING_PACKAGE(host);
     PACKAGE_NOT_EXISTS_CHECK_EXISTING_PACKAGE(host);
     PACKAGE_NAME_EQUAL_NELL_CHECK_EXISTING_PACKAGE(host);
+    PACKAGE_NAME_EXISTS_INSTALL_PACKAGE(host);
+    PACKAGE_NAME_NOT_EXISTS_DOESNT_INSTALL_PACKAGE(host);
 }
 
 void PACKAGE_EXISTS_CHECK_EXISTING_PACKAGE(Host* host)
 {
     PackageWorker* packageWorker = constructor_package_worker(host->processesManager);
 
-    if (packageWorker->is_package_exists(packageWorker, "git") == -1){
+    if (packageWorker->launch_package_manager(packageWorker, CHECK_PACKAGE, "git") == -1){
         host->logging->log(LOG_ERR, "Package \"git\" not found", __FILE__, __LINE__, __TIME__);
     }
     else {
@@ -49,7 +55,7 @@ void PACKAGE_NOT_EXISTS_CHECK_EXISTING_PACKAGE(Host* host)
 {
     PackageWorker* packageWorker = constructor_package_worker(host->processesManager);
 
-    if (packageWorker->is_package_exists(packageWorker, "gite") == -1){
+    if (packageWorker->launch_package_manager(packageWorker, CHECK_PACKAGE, "gite") == -1){
         host->logging->log(LOG_INF, "Package \"gite\" not found", __FILE__, __LINE__, __TIME__);
     }
     else {
@@ -59,12 +65,36 @@ void PACKAGE_NOT_EXISTS_CHECK_EXISTING_PACKAGE(Host* host)
 
 void PACKAGE_NAME_EQUAL_NELL_CHECK_EXISTING_PACKAGE(Host* host)
 {
-PackageWorker* packageWorker = constructor_package_worker(host->processesManager);
+    PackageWorker* packageWorker = constructor_package_worker(host->processesManager);
 
-    if (packageWorker->is_package_exists(packageWorker, NULL) == -1){
+    if (packageWorker->launch_package_manager(packageWorker, CHECK_PACKAGE, NULL) == -1){
         host->logging->log(LOG_INF, "Package name equal \"null\" not found", __FILE__, __LINE__, __TIME__);
     }
     else {
         host->logging->log(LOG_ERR, "Package name equal \"null\" found", __FILE__, __LINE__, __TIME__);
+    }
+}
+
+void PACKAGE_NAME_EXISTS_INSTALL_PACKAGE(Host* host)
+{
+    PackageWorker* packageWorker = constructor_package_worker(host->processesManager);
+
+    if (packageWorker->launch_package_manager(packageWorker, INSTALL_PACKAGE, "antiword") == 0){
+        host->logging->log(LOG_INF, "Package name \"git\" install", __FILE__, __LINE__, __TIME__);
+    }
+    else {
+        host->logging->log(LOG_ERR, "Package name \"git\" not install", __FILE__, __LINE__, __TIME__);
+    }
+}
+
+void PACKAGE_NAME_NOT_EXISTS_DOESNT_INSTALL_PACKAGE(Host* host)
+{
+    PackageWorker* packageWorker = constructor_package_worker(host->processesManager);
+
+    if (packageWorker->launch_package_manager(packageWorker, INSTALL_PACKAGE, "gite") == -1){
+        host->logging->log(LOG_INF, "Package name \"gite\" not install", __FILE__, __LINE__, __TIME__);
+    }
+    else {
+        host->logging->log(LOG_ERR, "Package name \"gite\" install", __FILE__, __LINE__, __TIME__);
     }
 }
