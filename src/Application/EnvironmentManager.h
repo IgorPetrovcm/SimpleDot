@@ -13,25 +13,30 @@
 
 typedef struct {
     AppSettings* appSettings;
-    char* pathToAppSettingsFile;
+    char* baseFolderName;
+    char* appSettingsFileName;
+    char* dotFilesFileName;
 
+    int (*write_full_path)(void* self, char* buffer, char* fileName);
     int (*print_appsetting_to_buffer)(char* buffer, char* name, char* value);
-    int (*print_variables_to_buffer)(void* self, char* buffer, char delimiter);
-    int (*push_settings_from_file)(char*);
+    int (*print_variables_to_buffer)(void* self, char* buffer, char* delimiter);
+    int (*push_settings_from_file)(void* self);
     char* (*get_logging_variable)(int);
     int (*print_settings_to_file)(void*);
 } EnvironmentManager;
 
+int write_full_path(void* self, char* buffer, char* fileName);
+
 int print_appsetting_to_buffer(char* buffer, char* name, char* value);
 
-int print_variables_to_buffer(void* self, char* buffer, char delimiter);
+int print_variables_to_buffer(void* self, char* buffer, char* delimiter);
 
-int push_settings_from_file(char* pathToAppSettingsFile);
+int push_settings_from_file(void* self);
 
 char* get_logging_variable(int mode);
 
 int print_settings_to_file(void* self);
 
-EnvironmentManager* constructor_environment_manager(char* pathToAppSettingsFile);
+EnvironmentManager* constructor_environment_manager(char* baseFolderName, char* appSettingsFileName, char* dotFilesFileName);
 
 # endif

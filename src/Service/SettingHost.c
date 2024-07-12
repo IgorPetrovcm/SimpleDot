@@ -30,6 +30,7 @@ int set_appsettings_file(char* buffer, char* appSettingsDirectory, char* appSett
     FILE* appSettingsFileRead = fopen(buffer, "r");
     if (appSettingsFileRead == NULL){
         errno = 0;
+        fclose(appSettingsFileRead);
         FILE* appSettingsFile = fopen(buffer, "w");
         fclose(appSettingsFile);
     }
