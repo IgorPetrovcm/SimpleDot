@@ -30,8 +30,6 @@ int print_appsetting_to_buffer(char* buffer, char* name, char* value)
         return -1;
     }
 
-    strcat(buffer, "\0");
-
     return 0;
 }
 
@@ -74,8 +72,8 @@ int print_settings_to_file(void *self)
 
     EnvironmentManager* envMngr = (EnvironmentManager*)self; 
 
-    char settings[2048];
-    print_variables_to_buffer(envMngr, settings, '\n');
+    char* settings = malloc(2048);
+    envMngr->print_variables_to_buffer(envMngr, settings, '\n');
 
     FILE* appSettingsFile = fopen(envMngr->pathToAppSettingsFile, "w+");
 
@@ -129,6 +127,8 @@ int push_settings_from_file(char* pathToAppSettingsFile)
     }
 
     fclose(appSettingsFile);
+
+    return 0;
 }
 
 char* get_logging_variable(int mode)
