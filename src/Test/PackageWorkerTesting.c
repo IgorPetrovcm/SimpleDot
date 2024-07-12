@@ -32,7 +32,7 @@ int main(){
 
     host->logging = constructor_logging(envMngr);
 
-    envMngr->push_settings_from_file(host->pathToAppSettingsFile);
+    envMngr->push_settings_from_file(envMngr);
 
     PackageWorker* packageWorker = constructor_package_worker(host->processesManager);
 
