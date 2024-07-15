@@ -1,4 +1,5 @@
 bottom: bottom.so
+	sudo cp bottom.so /lib/bottom.so
 
 bottom.so: matches.o
 	gcc -shared matches.o -o bottom.so
@@ -9,3 +10,4 @@ matches.o: matches.c
 clean:
 	rm -f matches.o
 	rm -f bottom.so
+	sudo rm -f /lib/bottom.so
