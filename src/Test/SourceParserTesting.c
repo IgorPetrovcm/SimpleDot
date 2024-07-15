@@ -7,10 +7,16 @@
 
 # define FIRST_PACK_MATCHES_THAT_EXISTS get_dir_by_matches_exists_matches
 # define SECOND_PACK_MATCHES_THAT_NOT_EXISTS get_dir_by_matches_not_exists_matches
+# define PARSING_TEST1 get_directory_names_exists
+# define PARSING_TEST2 get_derictory_names_not_exists
 
 void FIRST_PACK_MATCHES_THAT_EXISTS(SourceParser* srcParser);
 
 void SECOND_PACK_MATCHES_THAT_NOT_EXISTS(SourceParser* srcParser);
+
+void PARSING_TEST1(SourceParser* srcParser);
+
+void PARSING_TEST2(SourceParser* srcParser);
 
 int main()
 {
@@ -28,6 +34,8 @@ int main()
 
     FIRST_PACK_MATCHES_THAT_EXISTS(srcParser);
     SECOND_PACK_MATCHES_THAT_NOT_EXISTS(srcParser);
+    PARSING_TEST1(srcParser);
+    PARSING_TEST2(srcParser);
 }
 
 void FIRST_PACK_MATCHES_THAT_EXISTS(SourceParser* srcParser)
@@ -58,5 +66,41 @@ void SECOND_PACK_MATCHES_THAT_NOT_EXISTS(SourceParser* srcParser)
     }
     else {
         srcParser->logging->log(LOG_ERR, "\"config\" directory matches", __FILE__, __LINE__, __TIME__);
+    }
+}
+
+void PARSING_TEST1(SourceParser* srcParser)
+{
+    int namesCount = 1024;
+    char*** names = malloc(namesCount * (sizeof(char**)));
+    int count = 0;
+
+    srcParser->sources = "SourceParserTestingTestExamples/first_pack";
+
+    srcParser->get_directory_names(srcParser, names, namesCount, &count);
+
+    if (*names == NULL){
+        srcParser->logging->log(LOG_ERR, "Could not list exists directories", __FILE__, __LINE__, __TIME__);
+    }
+    else {
+        srcParser->logging->log(LOG_INF, "Could list directories", __FILE__, __LINE__, __TIME__);
+    }
+}
+
+void PARSING_TEST2(SourceParser* srcParser)
+{
+    int namesCount;
+    char*** names = malloc(namesCount * (sizeof(char**)));
+    int count = 0;
+
+    srcParser->sources = "SourceParserTestingTestExamples/second_pack";
+
+    srcParser->get_directory_names(srcParser, names, namesCount, &count);
+
+    if (*names == NULL){
+        srcParser->logging->log(LOG_INF, "Could not list not exists directories", __FILE__, __LINE__, __TIME__);
+    }
+    else {
+        srcParser->logging->log(LOG_ERR, "Could list not exists derectories", __FILE__, __LINE__, __TIME__);
     }
 }
