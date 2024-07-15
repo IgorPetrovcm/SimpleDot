@@ -59,7 +59,9 @@ int get_dir_by_matches(void* self, char** pathToMatch, int matchesCount, ...)
     int i = 0;
 
     while ((dirEntity = readdir(sourceDirectory)) != NULL){
-        if (dirEntity->d_type != DT_DIR || strcmp(dirEntity->d_name, ".") == 0 || strcmp(dirEntity->d_name, "..") == 0){
+        char* entName = dirEntity->d_name;
+        unsigned char entType = dirEntity->d_type;
+        if (entType!= DT_DIR || is_match(entName, 2, ".", "..") == 0){
             continue;
         }
         for (int j = 0; j < matchesCount; j++){
