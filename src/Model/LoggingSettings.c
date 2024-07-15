@@ -8,6 +8,7 @@ LoggingSettings* constructor_logging_settings()
     loggingSettings->error = "Error from";
     loggingSettings->info = "Info from";
     loggingSettings->warning = "Warning from";
+    loggingSettings->hint = "Hint from";
 
     return loggingSettings;
 }

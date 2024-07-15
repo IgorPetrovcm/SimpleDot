@@ -3,9 +3,9 @@
 # include <stdlib.h>
 # include <stdio.h>
 
-static char* const headers[3] = { "\033[1m\033[31mERROR\033[0m", "\033[1m\033[32mINFO\033[0m", "\033[1m\033[33mWARNING\033[0m"};
+static char* const headers[4] = { "\033[1m\033[31mERROR\033[0m", "\033[1m\033[32mINFO\033[0m", "\033[1m\033[33mWARNING\033[0m", "\033[1m\033[35mHINT\033[0m"};
 
-static char* const startMessageVariables[3] = { SMD_LOGGING_ERROR, SMD_LOGGING_INFO, SMD_LOGGING_WARNING };
+static char* const startMessageVariables[4] = { SMD_LOGGING_ERROR, SMD_LOGGING_INFO, SMD_LOGGING_WARNING, SMD_LOGGING_HINT };
 
 Logging* constructor_logging(EnvironmentManager *envMngr)
 {

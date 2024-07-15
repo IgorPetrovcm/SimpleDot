@@ -5,7 +5,7 @@
 # include <stdlib.h>
 # include <errno.h>
 
-char* const logging_modes[3] = { SMD_LOGGING_ERROR, SMD_LOGGING_INFO, SMD_LOGGING_WARNING };
+char* const logging_modes[4] = { SMD_LOGGING_ERROR, SMD_LOGGING_INFO, SMD_LOGGING_WARNING, SMD_LOGGING_HINT };
 
 
 EnvironmentManager* constructor_environment_manager(char* baseFolderName, char* appSettingsFileName, char* dotFilesFileName)
@@ -65,11 +65,12 @@ int print_variables_to_buffer(void* self, char* buffer, char* delimiter)
 
     EnvironmentManager* envMngr = (EnvironmentManager*)self;
 
-    int variablesCount = 3;
-    char* variables[3] = { 
+    int variablesCount = 4;
+    char* variables[4] = { 
         envMngr->appSettings->loggingSettings->error, 
         envMngr->appSettings->loggingSettings->info,
-        envMngr->appSettings->loggingSettings->warning
+        envMngr->appSettings->loggingSettings->warning,
+        envMngr->appSettings->loggingSettings->hint
         };
 
     for (int i = 0; i < variablesCount; i++){

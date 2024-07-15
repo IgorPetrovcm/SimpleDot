@@ -5,6 +5,7 @@ typedef struct {
     char* error;
     char* info;
     char* warning;
+    char* hint;
 } LoggingSettings;
 
 LoggingSettings* constructor_logging_settings();

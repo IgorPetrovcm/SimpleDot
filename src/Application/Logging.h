@@ -4,6 +4,7 @@
 # define LOG_ERR 0
 # define LOG_INF 1
 # define LOG_WAR 2
+# define LOG_HINT 3
 
 # include "EnvironmentManager.h"
 
