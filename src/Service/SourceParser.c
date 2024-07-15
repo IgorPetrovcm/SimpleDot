@@ -1,5 +1,6 @@
 # include "../Application/SourceParser.h"
 # include "../Application/Logging.h"
+# include "../Bottom/matches.h"
 # include <stdlib.h>
 # include <stdarg.h>
 # include <dirent.h>
@@ -14,7 +15,7 @@ SourceParser* constructor_source_parser(char *sources, Logging* logging)
     sourceParser->sources = sources;
 
     sourceParser->get_dir_by_matches = get_dir_by_matches;
-    // sourceParser->get_directory_names = get_directory_names;
+    sourceParser->get_directory_names = get_directory_names;
 
     return sourceParser;
 }
@@ -85,69 +86,61 @@ int get_dir_by_matches(void* self, char** pathToMatch, int matchesCount, ...)
     return 0;
 }
 
-// ##########################################################################################################################
-// ###                                                                                                                    ###
-// ###                                            doesn't work yet                                                        ###
-// ###                                                                                                                    ###
-// ##########################################################################################################################
+int get_directory_names(void* self, char*** names, int namesc, int* count)
+{
+    errno = 0;
+    int errNum;
 
-// ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-// char** get_directory_names(void* self, int* count)
-// {
-//     errno = 0;
-//     int errNum;
+    SourceParser* sourceParser = (SourceParser*)self;
 
-//     SourceParser* sourceParser = (SourceParser*)self;
+    char** pathToDotfiles = malloc(sizeof(char*));
+    *pathToDotfiles = malloc(256);
 
-//     DIR* sourceDirectory = opendir(sourceParser->sources);
+    sourceParser->get_dir_by_matches(sourceParser, pathToDotfiles, 3, "config", ".config", "configs");
 
-//     if ((errNum = errno) != 0){
-//         char* errBuffer = strerror(errNum);
-//         sourceParser->logging->log(LOG_ERR, errBuffer, __FILE__, __LINE__, __TIME__);
-//         return NULL;
-//     }
+    if (*pathToDotfiles == NULL){
+        sourceParser->logging->log(LOG_ERR, "Directory for dotfiles not found", __FILE__, __LINE__, __TIME__);
+        sourceParser->logging->log(LOG_HINT, "The directory you specified \
+         should contain a directory with dotfiles. \
+         Available directory names with dotfiles: \"config\", \".config\", \"configs\".",
+         __FILE__, __LINE__, __TIME__);
 
-//     struct dirent* fd;
+         return -1;
+    }
 
-//     char** result = malloc(1024 * sizeof(char*));
-//     for (int i = 0; i < 256; i++){
-//         result[i] = malloc(256 * sizeof(char));
-//     }
+    struct dirent* dirEntity;
 
-//     int i = 0;
-//     while ((fd = readdir(sourceDirectory)) != NULL){
-//         if (fd->d_type != DT_DIR){
-//             continue;
-//         }
-//         if (strcmp(fd->d_name, ".config") == 0 || strcmp(fd->d_name, "config") == 0 || strcmp(fd->d_name, "configs") == 0){
-//             DIR* configDirectory = opendir(fd->d_name);
+    for (int i = 0; i < 1024; i++){
+        names[i] = malloc(sizeof(char*));
+    }
+    for (int i = 0; i < 1024; i++){
+        *names[i] = malloc(256 * sizeof(char));
+    }
 
-//             if ((errNum = errno) != 0){
-//                 char* errBuffer = strerror(errNum);
-//                 sourceParser->logging->log(LOG_ERR, errBuffer, __FILE__, __LINE__, __TIME__);
-//                 return NULL;
-//             }
+    DIR* dotfiles = opendir(*pathToDotfiles);
 
-//             struct dirent* fdFromConfigs;
-//             int j = 0;
-//             while ((fdFromConfigs = readdir(configDirectory)) != NULL){
-//                 if (fdFromConfigs->d_type != DT_DIR){
-//                     continue;
-//                 }
-//                 result[j] = fdFromConfigs->d_name;
+    if ((errNum = errno) != 0){
+        return errNum;
+    }
 
-//                 j++;
-//                 *count += 1;
-//             }
-//         }
-//         i++;
-//     }
+    int i = 0;
+    while ((dirEntity = readdir(dotfiles)) != NULL){
+        char* entName = dirEntity->d_name;
+        unsigned char entType = dirEntity->d_type;
+        if (entType != DT_DIR || is_match(entName, 2, ".", "..") == 0){
+            continue;
+        }
 
-//     if ((errNum = errno) != 0){
-//         char* errBuffer = strerror(errNum);
-//         sourceParser->logging->log(LOG_ERR, errBuffer, __FILE__, __LINE__, __TIME__);
-//         return NULL;
-//     }
+        *names[i] = dirEntity->d_name;
 
-//     return result;
-// }
+        *count += 1;
+        
+        i++;
+    }
+
+    if (*count == 0){
+        *names = NULL; 
+    }
+
+    return 0;
+}

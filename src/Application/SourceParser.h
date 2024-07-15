@@ -10,12 +10,12 @@ typedef struct {
     Logging* logging;
 
     int (*get_dir_by_matches)(void* self, char** pathToMatch, int matchesCount, ...);
-    // char** (*get_directory_names)(void* self, int* count);
+    int (*get_directory_names)(void* self, char*** names, int namesc, int* count);
 } SourceParser;
 
 int get_dir_by_matches(void* self, char** pathToMatch, int matchesCount, ...);
 
-// char** get_directory_names(void* self, int* count);
+int get_directory_names(void* self, char*** names, int namesc, int* count);
 
 SourceParser* constructor_source_parser(char* sources, Logging* logging);
 
