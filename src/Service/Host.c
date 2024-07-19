@@ -1,8 +1,6 @@
 # include "../Application/Host.h"
 # include "../Application/SettingHost.h"
 # include "../Application/EnvironmentManager.h"
-# include "../Application/ProcessesManager.h"
-# include <stdio.h>
 # include <string.h>
 # include <stdlib.h>
 
@@ -25,7 +23,6 @@ Host* constructor_host()
     }
 
     host->envMngr = constructor_environment_manager(baseFolderName, appSettingsFileName, dotFilesFileName);
-    host->processesManager = constructor_processes_manager();
     host->settingHost = settingHost;
 
     return host;

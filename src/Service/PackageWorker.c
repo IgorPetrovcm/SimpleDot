@@ -1,5 +1,7 @@
 # include "../Application/PackageWorker.h"
-#include <time.h>
+# include <smdbottom/procaproc.h>
+# include <smdbottom/fullstrs.h>
+# include <time.h>
 # include <unistd.h>
 # include <stdio.h>
 # include <stdlib.h>
@@ -16,11 +18,9 @@ static const char* no_confirm_flag = "--noconfirm";
 
 char* (*get_options[3])(void* self, char* packageName) = {get_check_str, get_install_str, get_unistall_str};
 
-PackageWorker* constructor_package_worker(ProcessesManager* processesManager)
+PackageWorker* constructor_package_worker()
 {
     PackageWorker* packageWorker = (PackageWorker*)malloc(sizeof(PackageWorker));
-
-    packageWorker->processesManager = processesManager;
 
     packageWorker->get_check_str = get_check_str;
     packageWorker->get_install_str = get_install_str;
@@ -36,7 +36,7 @@ char* get_check_str(void* self, char* packageName)
 
     char* options = malloc(256);
 
-    packageWorker->processesManager->adding_to_buffer(options, 5, package_manager, " ", q_flag, "i ", packageName);
+    bufferadder(options, 5, package_manager, " ", q_flag, "i ", packageName);
 
     return options;
 }
@@ -47,7 +47,7 @@ char* get_install_str(void* self, char* packageName)
 
     char* options = malloc(256);
 
-    packageWorker->processesManager->adding_to_buffer(options, 9, sudo, " ", package_manager, " ", s_flag, " ", no_confirm_flag, " ", packageName);
+    bufferadder(options, 9, sudo, " ", package_manager, " ", s_flag, " ", no_confirm_flag, " ", packageName);
 
     return options;
 }
@@ -58,7 +58,7 @@ char* get_unistall_str(void* self, char* packageName)
 
     char* options = malloc(256);
 
-    packageWorker->processesManager->adding_to_buffer(options, 9, sudo, " ", package_manager, " ", unis_flag, " ", no_confirm_flag, " ", packageName);
+    bufferadder(options, 9, sudo, " ", package_manager, " ", unis_flag, " ", no_confirm_flag, " ", packageName);
 
     return options;
 }
@@ -73,7 +73,8 @@ int launch_package_manager(void* self, int mode, char* packageName)
 
     char* options = get_options[mode](packageWorker, packageName);
 
-    if (packageWorker->processesManager->write_process(packageWorker->processesManager, options) != 0){
+    char* pmessage = malloc(2048);
+    if (pout(options, pmessage) != 0){
         return -1;
     }
 
