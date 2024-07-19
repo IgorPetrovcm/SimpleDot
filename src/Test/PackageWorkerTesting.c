@@ -3,6 +3,7 @@
 # include "../Application/Logging.h"
 # include "../Application/PackageWorker.h"
 # include <unistd.h>
+# include <stdio.h>
 
 # define PACKAGE_EXISTS_CHECK_EXISTING_PACKAGE launch_package_manager_check_existing_package_should_return_true
 # define PACKAGE_NOT_EXISTS_CHECK_EXISTING_PACKAGE launch_package_manager_check_not_existsing_package_should_return_false
@@ -34,8 +35,6 @@ int main(){
 
     envMngr->push_settings_from_file(envMngr);
 
-    PackageWorker* packageWorker = constructor_package_worker(host->processesManager);
-
     PACKAGE_EXISTS_CHECK_EXISTING_PACKAGE(host);
     PACKAGE_NOT_EXISTS_CHECK_EXISTING_PACKAGE(host);
     PACKAGE_NAME_EQUAL_NELL_CHECK_EXISTING_PACKAGE(host);
@@ -47,7 +46,7 @@ int main(){
 
 void PACKAGE_EXISTS_CHECK_EXISTING_PACKAGE(Host* host)
 {
-    PackageWorker* packageWorker = constructor_package_worker(host->processesManager);
+    PackageWorker* packageWorker = constructor_package_worker();
 
     if (packageWorker->launch_package_manager(packageWorker, CHECK_PACKAGE, "git") == -1){
         host->logging->log(LOG_ERR, "Package \"git\" not found", __FILE__, __LINE__, __TIME__);
@@ -59,7 +58,7 @@ void PACKAGE_EXISTS_CHECK_EXISTING_PACKAGE(Host* host)
 
 void PACKAGE_NOT_EXISTS_CHECK_EXISTING_PACKAGE(Host* host)
 {
-    PackageWorker* packageWorker = constructor_package_worker(host->processesManager);
+    PackageWorker* packageWorker = constructor_package_worker();
 
     if (packageWorker->launch_package_manager(packageWorker, CHECK_PACKAGE, "gite") == -1){
         host->logging->log(LOG_INF, "Package \"gite\" not found", __FILE__, __LINE__, __TIME__);
@@ -71,7 +70,7 @@ void PACKAGE_NOT_EXISTS_CHECK_EXISTING_PACKAGE(Host* host)
 
 void PACKAGE_NAME_EQUAL_NELL_CHECK_EXISTING_PACKAGE(Host* host)
 {
-    PackageWorker* packageWorker = constructor_package_worker(host->processesManager);
+    PackageWorker* packageWorker = constructor_package_worker();
 
     if (packageWorker->launch_package_manager(packageWorker, CHECK_PACKAGE, NULL) == -1){
         host->logging->log(LOG_INF, "Package name equal \"null\" not found", __FILE__, __LINE__, __TIME__);
@@ -83,7 +82,7 @@ void PACKAGE_NAME_EQUAL_NELL_CHECK_EXISTING_PACKAGE(Host* host)
 
 void PACKAGE_NAME_EXISTS_INSTALL_PACKAGE(Host* host)
 {
-    PackageWorker* packageWorker = constructor_package_worker(host->processesManager);
+    PackageWorker* packageWorker = constructor_package_worker();
 
     if (packageWorker->launch_package_manager(packageWorker, INSTALL_PACKAGE, "antiword") == 0){
         host->logging->log(LOG_INF, "Package name \"antiword\" install", __FILE__, __LINE__, __TIME__);
@@ -95,7 +94,7 @@ void PACKAGE_NAME_EXISTS_INSTALL_PACKAGE(Host* host)
 
 void PACKAGE_NAME_NOT_EXISTS_DOESNT_INSTALL_PACKAGE(Host* host)
 {
-    PackageWorker* packageWorker = constructor_package_worker(host->processesManager);
+    PackageWorker* packageWorker = constructor_package_worker();
 
     if (packageWorker->launch_package_manager(packageWorker, INSTALL_PACKAGE, "gite") == -1){
         host->logging->log(LOG_INF, "Package name \"gite\" not install", __FILE__, __LINE__, __TIME__);
@@ -107,7 +106,7 @@ void PACKAGE_NAME_NOT_EXISTS_DOESNT_INSTALL_PACKAGE(Host* host)
 
 void PACKAGE_EXISTS_UNISTALL_PACKAGE(Host* host)
 {
-    PackageWorker* packageWorker = constructor_package_worker(host->processesManager);
+    PackageWorker* packageWorker = constructor_package_worker();
 
     if (packageWorker->launch_package_manager(packageWorker, UNISTALL_PACKAGE, "antiword") == 0){
         host->logging->log(LOG_INF, "Package name \"antiword\" unistall succesfully", __FILE__, __LINE__, __TIME__);
@@ -119,7 +118,7 @@ void PACKAGE_EXISTS_UNISTALL_PACKAGE(Host* host)
 
 void PACKAGE_NOT_EXISTS_UNISTALL_PACKAGE(Host* host)
 {
-    PackageWorker* packageWorker = constructor_package_worker(host->processesManager);
+    PackageWorker* packageWorker = constructor_package_worker();
 
     if (packageWorker->launch_package_manager(packageWorker, UNISTALL_PACKAGE, "antiword") == -1){
         host->logging->log(LOG_INF, "Package name \"antiword\" doesn't unistall", __FILE__, __LINE__, __TIME__);        
